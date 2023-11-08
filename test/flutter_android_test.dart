@@ -10,6 +10,12 @@ class MockFlutterAndroidPlatform
 
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  Future<void> navigateToAndroidScreen() {
+    // TODO: implement navigateToAndroidScreen
+    throw UnimplementedError();
+  }
 }
 
 void main() {

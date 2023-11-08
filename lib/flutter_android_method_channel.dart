@@ -14,4 +14,14 @@ class MethodChannelFlutterAndroid extends FlutterAndroidPlatform {
     final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
+
+  @override
+  Future<void> navigateToAndroidScreen() async {
+    await methodChannel.invokeMethod<void>('navigateToAndroidScreen');
+  }
+
+  /*@override
+  Future<void> navigateBackToAndroidScreen(int sum) async {
+    await methodChannel.invokeMethod<void>('navigateBackToAndroidScreen', {"sum": "$sum"});
+  }*/
 }
