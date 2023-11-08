@@ -2,10 +2,50 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_android/flutter/secondary_flutter_screen.dart';
 import 'package:flutter_android/flutter_android.dart';
+import 'package:flutter_android/flutter/flutter_method_channel.dart';
 
-void main() {
+/*void main() {
+  //WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
+}*/
+
+void main(List<String> args) {
+  return runApp(
+    MaterialApp(
+      initialRoute: '/',
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/':
+            return MaterialPageRoute(
+              builder: (_) => const MyApp(),
+            );
+          case '/secondaryFlutterScreen':
+            return MaterialPageRoute(
+              builder: (_) => SecondaryFlutterScreen(
+                  value1: args[0].isNotEmpty ? int.parse(args[0]) : 0, value2: args[1].isNotEmpty ? int.parse(args[1]) : 0),
+                  //value1: (settings.arguments as Map<String, int>)['value1']!, value2: (settings.arguments as Map<String, int>)['value2']!),
+            );
+          default:
+            return MaterialPageRoute(
+              builder: (_) => const Scaffold(
+                body: Center(
+                  child: Text(
+                    'text',
+                  ),
+                ),
+              ),
+            );
+        }
+      },
+      /*routes: {
+        '/': (context) => const MyApp(),
+        '/secondaryFlutterScreen': (context) => SecondaryFlutterScreen(
+            value1: args[0].isNotEmpty ? int.parse(args[0]) : 0, value2: args[1].isNotEmpty ? int.parse(args[1]) : 0),
+      },*/
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -16,46 +56,48 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
   final _flutterAndroidPlugin = FlutterAndroid();
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
+  Future<void> navigateToAndroidScreen() async {
     try {
-      platformVersion =
-          await _flutterAndroidPlugin.getPlatformVersion() ?? 'Unknown platform version';
+      await _flutterAndroidPlugin.navigateToAndroidScreen();
     } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+      print('Failed to navigate to android screen.');
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    FlutterMethodChannel.instance.configureChannel(context);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Main'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.blue),
+            ),
+            child: TextButton(
+              onPressed: () {
+                navigateToAndroidScreen();
+              },
+              child: const Text(
+                'Navigate to Android Screen',
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

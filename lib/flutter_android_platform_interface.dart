@@ -26,4 +26,12 @@ abstract class FlutterAndroidPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<void> navigateToAndroidScreen() {
+    throw UnimplementedError('navigateToAndroidScreen() has not been implemented.');
+  }
+
+  /*Future<void> navigateBackToAndroidScreen(int sum) {
+    throw UnimplementedError('navigateBackToAndroidScreen(int sum) has not been implemented.');
+  }*/
 }
